@@ -315,6 +315,7 @@ function variosParams(nombre: string, apellidos?: string, edad: number = 18) {
 }
 
 variosParams("Martin" ); // Martin tiene 18 años
+variosParams("Renzo" ); // Renzo tiene 18 años
 variosParams("Martin", "San Jose"); // Martin San Jose tiene 18 años
 variosParams("Martin", undefined, 30); // Martin tiene 18 años
 variosParams("Martin", "San Jose", 30); // Martin San Jose tiene 30 años

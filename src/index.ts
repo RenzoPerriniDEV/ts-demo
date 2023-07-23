@@ -321,10 +321,172 @@ variosParams("Martin", undefined, 30); // Martin tiene 18 años
 variosParams("Martin", "San Jose", 30); // Martin San Jose tiene 30 años
 //variosParams(nombre="Renzo", apellidos="Lopez", edad=30); // Martin Lopez tiene 30 años
 
-// Sobre carga de funciones
+//Puede recibir un parámetro en este caso de tipo string o number
+function ejemploVariosTipos(a: string | number) {
+    if(typeof(a) == 'string') {
+        console.log("A es un string");
+    } else if (typeof(a) == 'number') {
+        console.log("A es un number");
+    } else {
+        console.log("A no es un string ni tampoco un number");
+        throw Error("A no es un string ni un number");
+    }
+}
+
+ejemploVariosTipos("Hola");
+ejemploVariosTipos(3);
 
 
-// Funciones asíncronas
+// Funciones anónimas
+let ejemploArrow = () => {}
 
 
-// Funciones generadores
+// Retorno de valores. :string -> indica que solo devuelve string
+// : string | number: puede retornar string o number
+/**
+ * 
+ * @param nombre Nombre de la persona
+ * @param apellidos Apellidos de la persona
+ * @returns Nombre completo
+ */
+function ejemploReturn(nombre: string, apellidos: string): string {
+    return `${nombre} ${apellidos}`; 
+}
+
+const nombreCompleto = ejemploReturn("Renzo", "Perrini");
+console.log(nombreCompleto);
+console.log(ejemploReturn("Renzo", "Perrini"));
+
+
+// ...nombres: de esta forma se indica que la funcion puede recibir varios param o no recibir nada
+function ejemploMultiParam(...nombres: string[]): void {
+    nombres.forEach((nombre) => {
+            console.log(nombre);
+    });
+}
+ejemploMultiParam("Renzo", "Pepe", "Juan");
+
+
+const lista = ["Alberto", "Pepe"];
+ejemploMultiParam(...lista);
+
+function ejemploParamLista(nombres: string[]) {
+    nombres.forEach((nombre) => {
+            console.log(nombre);
+    });
+}
+
+//Se pasa directamente una lista. La función espera una lista concreta.
+ejemploParamLista(lista);
+
+
+// ARROW Functions
+
+// Objeto con propiedades para ser instanciada
+type Empleado {
+    nombre: string
+    apellidos: string
+    edad: number
+}
+
+let empleadoRenzo: Empleado = {
+    nombre: "Renzo",
+    apellidos: "Perrini",
+    edad: 32
+}
+
+//Retorno directo
+const mostrarEmpleado = (empleado: Empleado):string => `${empleado.nombre} tiene ${empleado.edad} años`
+
+//Llamada a la función. Pasa por parámetros objeto creado
+mostrarEmpleado(empleadoRenzo)
+
+// En una funcion las {} quiere decir que podemos emplear varias instrucciones
+const datosEmpleado =  (empleado: Empleado):string => {
+    if(empleado.edad > 70) {
+        return `Empleado ${empleado.nombre} está en edad de jubilarse`
+    } else {
+        return `Empleado ${empleado.nombre} está en edad laboral`
+    }
+}
+
+datosEmpleado(empleadoRenzo);
+
+// Función anónima: función embebida dentro de una función
+const obtenerSalario = (empleado: Empleado, cobrar: () => void) => {
+    if(empleado.edad > 70) {
+        return 
+    } else {
+        cobrar() //Calback a ejecutar
+    }
+}
+
+const cobrarEmpleado = (empleado: Empleado) => {
+    console.log(`${empleado.nombre} cobra su salario`);
+}
+
+obtenerSalario(empleadoRenzo, () => cobrarEmpleado);
+
+
+// Funciones asíncronas: ejecutar tareas que demoren cierto tiempo. Se pueden ejecutar en un determinado momento.
+
+async function ejemploAsync(): Promise<string> {
+    // await: esperan para completar una tarea y así seguir a la siguiente línea. Hace algo que demora x tiempo antes de seguir con la siguiente linea.
+    await console.log("Tarea a completar antes de seguir con la secuencia de instrucciones")
+    console.log("Tarea completada")
+    return "Completado"
+}
+
+// Acceder al return "Completado" de la función a traves de la promesa
+ejemploAsync().then((respuesta) => {
+    console.log("Respuesta", respuesta);
+}).catch((error) => {
+    console.log("Hubo un eror", error);
+}).finally(() => "Todo ha terminado");
+
+
+
+// Funciones generadoras
+
+function* ejemploGenerator() {    
+    // yield: sirve para emitir un nuevo valor o ejecutar una función
+    
+    let index = 0;
+
+    while (index < 5) {
+        // Emitimos un valor incrementado
+        yield index++;
+    }
+}
+
+// Guardamos la función generadora en una variable. (Acá no se ejecuta)
+
+let generadora = ejemploGenerator();
+
+// Accedemos a los valores emitidos
+console.log(generadora.next().value) // muestra 0
+console.log(generadora.next().value) // muestra 1
+console.log(generadora.next().value) // muestra 2
+console.log(generadora.next().value) // muestra 3
+
+
+// Worker: varias funciones generadoras
+
+function* watcher(valor: number) {
+    yield valor; // emitimos el valor inicial
+    yield* worker(valor); // llamamos a las emisiones del worker para que emita otros valores
+    yield valor + 4; // Emitimos el valor final + 4 
+}
+
+function* worker(valor: number) {
+    yield valor + 1;
+    yield valor + 2;
+    yield valor + 3;
+}
+
+let generatorSaga = watcher(0);
+console.log(generatorSaga.next().value); // Muestra 0 (lo ha hecho el watcher)
+console.log(generatorSaga.next().value); // Muestra 1 (lo ha hecho el worker)
+console.log(generatorSaga.next().value); // Muestra 2 (lo ha hecho el worker)
+console.log(generatorSaga.next().value); // Muestra 3 (lo ha hecho el worker)
+console.log(generatorSaga.next().value); // Muestra valor + 4 (lo ha hecho el watcher)

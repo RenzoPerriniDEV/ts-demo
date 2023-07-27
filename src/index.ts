@@ -1,4 +1,4 @@
-console.log("Hello dawg");
+import { deleteAllCookies, deleteCookie, getCookieValue, setCookie } from 'cookies-utils'
 
 /*
 ********** Declaración de variables
@@ -490,3 +490,96 @@ console.log(generatorSaga.next().value); // Muestra 1 (lo ha hecho el worker)
 console.log(generatorSaga.next().value); // Muestra 2 (lo ha hecho el worker)
 console.log(generatorSaga.next().value); // Muestra 3 (lo ha hecho el worker)
 console.log(generatorSaga.next().value); // Muestra valor + 4 (lo ha hecho el watcher)
+
+
+// Sobrecarga de funciones
+
+// Puede recibir string o number
+function mostrarError(error: string | number): void {
+    console.log("Ha habido un error:", error);
+}
+
+
+// Persistencia, almacenamiento de datos, token, sesiones, cookies, información del estado de la aplicación para no estar consultando siempre a un endpoint
+
+// 1. Localstorage -> Almacena los datos en el navegador (no se eleiminan automáticamente)
+// 2. SessionStorage -> La diferencia radica en la sesión de navegador. Es decir, los datos se persisten en la sesón del navegador
+// 3. Cookies -> Tienen fecha de caducidad y también tienen un ámbito de URL
+
+
+// LocalStorage
+// function guardarEnLocalStorage() :void {
+//     localStorage.set("Nombre", "Renzo");
+// }
+
+// function leerLocalStorage() :void {
+//     let nombre = localStorage.get("Nombre");
+// }
+
+
+/** COOKIES */
+
+const cookieOptions = {
+    name: "usuario", // string,
+    value: "Renzo", // string,
+    maxAge: 10 * 60, // optional number (value in seconds), // Tiempo que estaría guardado
+    expires: new Date(2099, 10, 1), // optional Date,
+    path: "/", // optional string,
+   
+  };
+
+// Seteamos la Cookie
+setCookie(cookieOptions);
+
+// Leer una cookie
+let cookieLeida = getCookieValue("usuario");
+
+// Eliminamos la Cookie
+deleteCookie("usuario");
+
+// Eliminar todas las Cookies
+deleteAllCookies();
+
+
+
+
+// Clase Temporizador
+
+class Temporizador {
+
+    public terminar?: (tiempo: number) => void;
+
+    public empezar(): void {
+
+        setTimeout(() => {
+            
+            // Comprobamos que exista la función terminar como callback
+            if(!this.terminar) return;
+            
+            //Cuando haya pasado el tiempo, se ejecutará la función terminar
+            this.terminar(Date.now());
+        }, 10000);
+    }
+}
+
+const miTemporizador: Temporizador = new Temporizador();
+
+// Definimos la función del callback a ejecutar cuando termine el tiempo
+
+miTemporizador.terminar = (tiempo: number) => {
+    console.log("Hemos terminado la tarea en: ", tiempo);
+}
+
+// Lanzamos el temporizador
+miTemporizador.empezar(); // Se inicia el timeout y cuando termine, se ejecuta la función terminar
+
+// setInterval(() => console.log("Tic"), 1000) // Imprimir "Tic" cada un segundo por consola.
+
+// Eliminar la ejecución de la función
+delete miTemporizador.terminar;
+
+
+// Cuando haga click, se ejecuta la función anónima
+// document.getElmentById("#btn-login").addEventListener('click', () => {
+//     console.log("Has hecho click en el login");
+// })`

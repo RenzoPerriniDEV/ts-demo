@@ -1,4 +1,7 @@
 import { deleteAllCookies, deleteCookie, getCookieValue, setCookie } from 'cookies-utils'
+import { Curso } from './models/curso';
+import { Estudiante } from './models/Estudiante';
+import { LISTA_CURSOS } from './mock/cursos.mock';
 
 /*
 ********** Declaración de variables
@@ -582,4 +585,44 @@ delete miTemporizador.terminar;
 // Cuando haga click, se ejecuta la función anónima
 // document.getElmentById("#btn-login").addEventListener('click', () => {
 //     console.log("Has hecho click en el login");
-// })`
+// })
+
+
+/**  POO */
+
+// Instancia de curso
+
+const cursoTs = new Curso("TypeScript", 15);
+const cursoJs = new Curso("JavaScript", 20);
+
+const listaCursos: Curso[] = [];
+
+listaCursos.push(cursoTs, cursoJs); // Lista con los cursos
+
+
+// Usamos el MOCK para cursos
+const listaCursosMock: Curso[] = LISTA_CURSOS;
+
+// Instancia de estudiante
+
+const renzo = new Estudiante("Renzo", listaCursos, "Renzo Perrini");
+
+// Iteramos por cada uno de los cursos
+console.log(`${renzo.nombre} estudia: `);
+renzo.cursos.forEach((curso) => {
+    console.log(` - ${curso.nombre} (${curso.horas} horas)`);
+})
+
+const cursoAngular = new Curso("Angular", 40);
+renzo.cursos.push(cursoAngular);
+
+// Obtener horas estudiadas
+renzo.horasEstudiadas; // number
+
+// Setter
+renzo.setDni = "54444455";
+
+// Saber la instancia de un objeto/vatiable
+
+// - typeOf
+// - instanceOf
